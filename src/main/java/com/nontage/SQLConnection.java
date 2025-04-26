@@ -455,5 +455,30 @@ public class SQLConnection {
             }
             return null;
         }
+        public String[] getParsedStringArray() {
+            try {
+                ResultSet resultSet = executeQuery();
+                if (resultSet.next()) {
+                    int columnCount = resultSet.getMetaData().getColumnCount();
+                    String[] row = new String[columnCount];
+                    for (int i = 1; i <= columnCount; i++) {
+                        Object obj = resultSet.getObject(i);
+                        if (obj instanceof byte[]) {
+                            row[i - 1] = new String((byte[]) obj);
+                        } else if (obj != null) {
+                            row[i - 1] = obj.toString();
+                        } else {
+                            row[i - 1] = "null";
+                        }
+                    }
+                    resultSet.getStatement().close();
+                    return row;
+                }
+                resultSet.getStatement().close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }
