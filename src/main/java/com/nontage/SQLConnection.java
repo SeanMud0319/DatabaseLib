@@ -23,6 +23,14 @@ public class SQLConnection {
         }
     }
 
+    public SQLConnection(String url) {
+        try {
+            connection = DriverManager.getConnection(url);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void createTable(String tableName, String fields) {
         String sql = "CREATE TABLE " + tableName + " (" + fields + ")";
         execute(sql);
@@ -103,7 +111,7 @@ public class SQLConnection {
 
     public ResultSet executeQuery(String sql) {
         try {
-            return connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery();
+            return connection.prepareStatement(sql).executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -214,8 +222,10 @@ public class SQLConnection {
         }
 
         void prepare() throws SQLException {
-            statement = connection.prepareStatement(builder.toSQL(), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            prepared = true;
+            if (!prepared) {
+                statement = connection.prepareStatement(builder.toSQL());
+                prepared = true;
+            }
         }
 
         public SQLPrepare setString(int index, String data) {
@@ -407,6 +417,24 @@ public class SQLConnection {
             return null;
         }
 
+        public Long[] getLongArray() {
+            try {
+                ResultSet resultSet = executeQuery();
+                List<Long> list = new ArrayList<>();
+                while (resultSet.next()) {
+                    int size = resultSet.getMetaData().getColumnCount();
+                    for (int i = 0; i < size; i++) {
+                        list.add(resultSet.getLong(i + 1));
+                    }
+                }
+                resultSet.getStatement().close();
+                return list.toArray(new Long[]{});
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
         public String getString() {
             try {
                 ResultSet resultSet = executeQuery();
@@ -455,6 +483,7 @@ public class SQLConnection {
             }
             return null;
         }
+
         public String[] getParsedStringArray() {
             try {
                 ResultSet resultSet = executeQuery();
@@ -480,5 +509,6 @@ public class SQLConnection {
             }
             return null;
         }
+
     }
 }

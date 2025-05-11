@@ -11,4 +11,12 @@ public class Database {
         }
         connection = new SQLConnection(url, user, password);
     }
+    public static void connectSQLite(String url) {
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        connection = new SQLConnection(url);
+    }
 }
