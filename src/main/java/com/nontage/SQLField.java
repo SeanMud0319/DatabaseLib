@@ -1,6 +1,7 @@
 package com.nontage;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Blob;
 import java.sql.SQLException;
 import javax.sql.rowset.serial.SerialBlob;
@@ -72,6 +73,9 @@ public class SQLField {
     public Long getLong() {
         if (object instanceof BigDecimal) {
             return ((BigDecimal) object).longValue();
+        }
+        if (object instanceof BigInteger) {
+            return ((BigInteger) object).longValue();
         }
         if(object instanceof Integer) {
             return ((Integer) object).longValue();

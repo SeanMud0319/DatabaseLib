@@ -278,11 +278,20 @@ public class SQLConnection {
             return this;
         }
 
-
         public SQLPrepare setByte(int index, byte data) {
             try {
                 prepare();
                 statement.setByte(index, data);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return this;
+        }
+
+        public SQLPrepare setBytes(int index, byte[] data) {
+            try {
+                prepare();
+                statement.setBytes(index, data);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -462,15 +471,20 @@ public class SQLConnection {
         public Long getLong() {
             try {
                 ResultSet resultSet = executeQuery();
-                Long i = resultSet.next() ? resultSet.getLong(1) : null;
+                Long value = null;
+                if (resultSet.next()) {
+                    Object obj = resultSet.getObject(1);
+                    if (obj instanceof Number) {
+                        value = ((Number) obj).longValue();
+                    }
+                }
                 resultSet.getStatement().close();
-                return i;
+                return value;
             } catch (SQLException e) {
                 e.printStackTrace();
+                return null;
             }
-            return null;
         }
-
 
         public Boolean getBoolean() {
             try {
