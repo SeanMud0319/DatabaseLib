@@ -37,7 +37,7 @@ public class SQLConnection {
     }
 
     public boolean tableExists(String tableName) {
-        try (ResultSet resultSet = connection.getMetaData().getTables(null, null, tableName, null)) {
+        try (ResultSet resultSet = connection.getMetaData().getTables(connection.getCatalog(), connection.getSchema(), tableName, null)) {
             return resultSet.next();
         } catch (SQLException e) {
             e.printStackTrace();
