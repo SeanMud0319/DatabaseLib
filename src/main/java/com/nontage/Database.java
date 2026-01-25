@@ -15,7 +15,6 @@ public class Database {
         }
         connection = new SQLConnection(url, user, password);
         connected = true;
-        System.out.println("Database connected (MySQL).");
     }
 
     public static void connectSQLite(String url) {
@@ -27,7 +26,6 @@ public class Database {
         }
         connection = new SQLConnection(url);
         connected = true;
-        System.out.println("Database connected (SQLite).");
     }
 
     public static boolean isConnected() {
@@ -44,7 +42,6 @@ public class Database {
             try {
                 if (!connection.connection.isClosed()) {
                     connection.connection.close();
-                    System.out.println("Database disconnected.");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
